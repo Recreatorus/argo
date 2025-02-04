@@ -1,58 +1,39 @@
-// console.clear();
-
-gsap.registerPlugin(Draggable, InertiaPlugin);
-gsap.config({ trialWarn: false });
-
-//=========================
-// Check webPsupport
-//=========================
+gsap.registerPlugin(Draggable, InertiaPlugin), gsap.config({ trialWarn: !1 });
 var webPsupport = function () {
-  var webP = new Image();
-  webP.onload = WebP.onerror = function () {
-    callback(webP.height == 2);
-  };
-  webP.src =
-    'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+  var t = new Image();
+  (t.onload = WebP.onerror =
+    function () {
+      callback(2 == t.height);
+    }),
+    (t.src =
+      'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA');
 };
-
 console.log(webPsupport ? 'WEBP supported' : 'WEBP not supported');
-
-//=========================
-// Get data
-//=========================
 let data;
-
 (async () => {
-  const res = await fetch('./data/autos.json');
-  data = await res.json();
-  console.log('количество машин:', data.length);
-
-  displayMenuItems(data);
-  displayMenuButtons(data);
+  let t = await fetch('./data/autos.json');
+  (data = await t.json()),
+    console.log('количество машин:', data.length),
+    displayMenuItems(data),
+    displayMenuButtons(data);
 })();
-
-//=========================
-
 const carousel = document.querySelector('.carousel-items'),
   container = document.querySelector('.btn-container');
-
-function displayMenuItems(menuItems) {
-  let displayMenu = menuItems.map(function (item) {
+function displayMenuItems(t) {
+  let e = t.map(function (t) {
     return `
     <div class="carousel-item">
           <div class="model">
-            <div>${item.model}</div>
-            <div class="ident">ID: ${item.id}</div>
+            <div>${t.model}</div>
+            <div class="ident">ID: ${t.id}</div>
           </div>
-          <img loading="lazy" src="${
-            item.image
-          }" onerror="this.onerror=null;this.src='./img/no-image.jpg';" alt="car" />
+          <img loading="lazy" src="${t.image}" onerror="this.onerror=null;this.src='./img/no-image.jpg';" alt="car" />
           <div class="price-wrapper">
             <div class="price">${new Intl.NumberFormat('ru-RU', {
               style: 'currency',
               currency: 'RUB',
               maximumSignificantDigits: 1,
-            }).format(item.price)}</div>
+            }).format(t.price)}</div>
           </div>
           <button class="open-desc">Подробнее</button>
           <div class="desc">
@@ -61,40 +42,40 @@ function displayMenuItems(menuItems) {
               <tbody>
                 <tr>
                   <td>Двигатель</td>
-                  <td>${item.engine}</td>
+                  <td>${t.engine}</td>
                 </tr>
                 <tr>
                   <td>КПП</td>
-                  <td>${item.transmission}</td>
+                  <td>${t.transmission}</td>
                 </tr>
                 <tr>
                   <td>Задний мост</td>
-                  <td>${item.drive}</td>
+                  <td>${t.drive}</td>
                 </tr>
                 <tr>
                   <td>Передняя ось</td>
-                  <td>${item.wheels}</td>
+                  <td>${t.wheels}</td>
                 </tr>
                 <tr>
                   <td>Шины и управление</td>
-                  <td>${item.tires}</td>
+                  <td>${t.tires}</td>
                 </tr>
                 <tr>
                   <td>Размер</td>
-                  <td>${item.size}</td>
+                  <td>${t.size}</td>
                 </tr>
                 <tr>
                   <td>Передаточные числа</td>
-                  <td>${item.transmissionRatios}</td>
+                  <td>${t.transmissionRatios}</td>
                 </tr>
                 <tr>
                   <td>Топливный бак</td>
-                  <td>${item.fuelTank}</td>
+                  <td>${t.fuelTank}</td>
                 </tr>
                 <tr>
                   <td>Дополнительные параметры</td>
                   <td>
-                    ${item.desc}
+                    ${t.desc}
                   </td>
                 </tr>
               </tbody>
@@ -102,108 +83,81 @@ function displayMenuItems(menuItems) {
           </div>
         </div>`;
   });
-
-  displayMenu = displayMenu.join('');
-  carousel.innerHTML = displayMenu;
-  // carousel
-  const wrapper = document.querySelector('.carousel-container'),
-    boxes = document.querySelectorAll('.carousel-item'),
-    gap = 16,
-    boxWidth = boxes[0].offsetWidth,
-    boxHeight = boxes[0].offsetHeight;
-
-  // console.log(boxWidth, boxHeight);
-
-  let wrapWidth = boxes.length * (boxWidth + gap);
-  // gsap.set(wrapper, { height: boxHeight, width: wrapWidth });
-  gsap.set(wrapper, { height: boxHeight });
-
-  for (let i = 0; i < boxes.length; i++) {
-    let box = boxes[i];
-    gsap.set(box, { x: (i + 1) * (boxWidth + gap), left: -(boxWidth - gap) }); // (i + 1) - чтобы первый элемент был первым
-    // box.addEventListener('click', () => window.location = box.href);
+  (e = e.join('')), (carousel.innerHTML = e);
+  let r = document.querySelector('.carousel-container'),
+    n = document.querySelectorAll('.carousel-item'),
+    i = n[0].offsetWidth,
+    a = n[0].offsetHeight,
+    s = n.length * (i + 16);
+  gsap.set(r, { height: a });
+  for (let o = 0; o < n.length; o++) {
+    let d = n[o];
+    gsap.set(d, { x: (o + 1) * (i + 16), left: -(i - 16) });
   }
-
-  let wrapProgress = gsap.utils.wrap(0, 1);
-  let proxy = document.createElement('div');
-  let props = gsap.getProperty(proxy);
-
-  let animation = gsap
-    .to('.carousel-item', {
-      duration: 1,
-      x: '+=' + wrapWidth,
-      ease: Linear.easeNone,
-      paused: true,
-      repeat: -1,
-      modifiers: {
-        x: function (x) {
-          x = parseFloat(x) % wrapWidth;
-          return x + 'px';
+  let l = gsap.utils.wrap(0, 1),
+    c = document.createElement('div'),
+    u = gsap.getProperty(c),
+    g = gsap
+      .to('.carousel-item', {
+        duration: 1,
+        x: '+=' + s,
+        ease: Linear.easeNone,
+        paused: !0,
+        repeat: -1,
+        modifiers: {
+          x: function (t) {
+            return (t = parseFloat(t) % s) + 'px';
+          },
         },
-      },
-    })
-    .progress(-1 / boxes.length); // -1 чтобы первый элемент был первым
-
-  Draggable.create(proxy, {
-    type: 'x',
-    trigger: wrapper,
-    throwProps: true,
-    allowContextMenu: false,
-    onDrag: updateProgress,
-    onThrowUpdate: updateProgress,
-    // zIndexBoost: true,
-    zIndexBoost: false,
-    inertia: true,
-  });
-
-  function updateProgress() {
-    animation.progress(wrapProgress(props('x') / wrapWidth));
+      })
+      .progress(-1 / n.length);
+  function p() {
+    g.progress(l(u('x') / s));
   }
-
-  document.querySelectorAll('.open-desc').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      btn.nextElementSibling.classList.toggle('show');
-      btn.nextElementSibling.classList.contains('show') ? (btn.innerText = 'Скрыть') : (btn.innerText = 'Подробнее');
+  Draggable.create(c, {
+    type: 'x',
+    trigger: r,
+    throwProps: !0,
+    allowContextMenu: !1,
+    onDrag: p,
+    onThrowUpdate: p,
+    zIndexBoost: !1,
+    inertia: !0,
+  }),
+    document.querySelectorAll('.open-desc').forEach((t) => {
+      t.addEventListener('click', () => {
+        t.nextElementSibling.classList.toggle('show'),
+          t.nextElementSibling.classList.contains('show') ? (t.innerText = 'Скрыть') : (t.innerText = 'Подробнее');
+      });
     });
-  });
 }
-
-function displayMenuButtons(data) {
-  const categories = data.reduce(
-    function (values, item) {
-      if (!values.includes(item.category)) {
-        values.push(item.category);
-      }
-      return values;
-    },
-    ['все']
-  );
-  const categoryBtns = categories
-    .map(function (category) {
-      return `<button class="filter-btn" type="button" data-id=${category}>${category}</button>`;
-    })
-    .join('');
-
-  container.innerHTML = categoryBtns;
-
-  const filterBtns = container.querySelectorAll('.filter-btn');
-  filterBtns[0].click();
-  filterBtns[0].classList.add('active');
-  // filter items
-  filterBtns.forEach(function (btn) {
-    btn.addEventListener('click', function (e) {
-      const category = e.currentTarget.dataset.id;
-      const menuCategory = data.filter(function (menuItem) {
-        // console.log(menuItem.category);
-        if (menuItem.category === category) {
-          return menuItem;
-        }
+function displayMenuButtons(t) {
+  let e = t.reduce(
+      function (t, e) {
+        return t.includes(e.category) || t.push(e.category), t;
+      },
+      ['все']
+    ),
+    r = e
+      .map(function (t) {
+        return `<button class="filter-btn" type="button" data-id=${t}>${t}</button>`;
+      })
+      .join('');
+  container.innerHTML = r;
+  let n = container.querySelectorAll('.filter-btn');
+  n[0].click(),
+    n[0].classList.add('active'),
+    n.forEach(function (e) {
+      e.addEventListener('click', function (r) {
+        let i = r.currentTarget.dataset.id,
+          a = t.filter(function (t) {
+            if (t.category === i) return t;
+          });
+        n.forEach((t) => {
+          t.classList.remove('active');
+        }),
+          e.classList.add('active'),
+          'все' === i ? displayMenuItems(t) : displayMenuItems(a);
       });
-      filterBtns.forEach((el) => {
-        el.classList.remove('active');
-      });
-      btn.classList.add('active');
-      category === 'все' ? displayMenuItems(data) : displayMenuItems(menuCategory);
     });
-  });
 }
